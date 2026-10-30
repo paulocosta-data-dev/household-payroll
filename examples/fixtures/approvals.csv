@@ -1,0 +1,4 @@
+approval_id,work_date,start_time,end_time,break_minutes,status,decided_at,reason
+approval-001,2026-10-07,09:00,13:00,15,approved,2026-10-08T09:00:00+01:00,matched records
+approval-002,2026-10-15,09:00,13:00,0,approved,2026-10-16T09:00:00+01:00,employer record approved after divergence
+approval-003,2026-10-22,09:00,12:30,0,approved,2026-10-23T09:00:00+01:00,employer record approved

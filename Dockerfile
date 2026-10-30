@@ -9,6 +9,12 @@ WORKDIR /app
 COPY pyproject.toml README.md ./
 COPY src ./src
 COPY config ./config
+COPY sql ./sql
+COPY examples ./examples
+COPY tests ./tests
+COPY templates ./templates
+
+RUN pip install --no-cache-dir .
 
 ENTRYPOINT ["python", "-m", "household_payroll"]
 CMD ["healthcheck"]

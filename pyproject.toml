@@ -10,7 +10,12 @@ readme = "README.md"
 requires-python = ">=3.12"
 license = { file = "LICENSE" }
 authors = [{ name = "Project owner" }]
-dependencies = []
+dependencies = [
+    "duckdb==2.0.0",
+    "Jinja2==3.1.6",
+    "pytz==2026.6",
+    "tzdata==2026.6",
+]
 
 [project.scripts]
 household-payroll = "household_payroll.cli:main"

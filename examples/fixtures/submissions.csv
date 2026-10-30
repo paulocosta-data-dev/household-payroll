@@ -1,0 +1,6 @@
+source_record_key,author_id,submitted_at,work_date,start_time,end_time,break_minutes,notes
+form-001,employer,2026-10-07T14:05:00+01:00,2026-10-07,09:00,13:00,15,
+form-002,worker,2026-10-07T14:10:00+01:00,2026-10-07,09:00,13:00,15,
+form-003,employer,2026-10-15T14:05:00+01:00,2026-10-15,09:00,13:00,0,
+form-004,worker,2026-10-15T14:10:00+01:00,2026-10-15,10:00,14:00,0,
+form-005,employer,2026-10-22T13:35:00+01:00,2026-10-22,09:00,12:30,0,
