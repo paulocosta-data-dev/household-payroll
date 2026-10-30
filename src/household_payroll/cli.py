@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import sys
+from datetime import date
 from pathlib import Path
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
@@ -100,6 +101,59 @@ def _ingest_fixtures() -> int:
     return 0
 
 
+def _run_fixtures() -> int:
+    from household_payroll.pipeline import (
+        run_fixture_pipeline,
+    )
+
+    data_directory = Path(
+        os.getenv("APP_DATA_DIR", "data")
+    )
+    report_directory = Path(
+        os.getenv("APP_REPORT_DIR", "reports")
+    )
+    fixture_directory = Path(
+        os.getenv(
+            "APP_FIXTURE_DIR",
+            "examples/fixtures",
+        )
+    )
+
+    period_start = date.fromisoformat(
+        os.getenv("APP_PERIOD_START", "2026-09-28")
+    )
+    period_end = date.fromisoformat(
+        os.getenv("APP_PERIOD_END", "2026-10-27")
+    )
+
+    result = run_fixture_pipeline(
+        database_path=_database_path(),
+        schema_path=_schema_path(),
+        submissions_path=(
+            fixture_directory / "submissions.csv"
+        ),
+        rates_path=(
+            fixture_directory / "rate_versions.csv"
+        ),
+        approvals_path=(
+            fixture_directory / "approvals.csv"
+        ),
+        template_path=Path(
+            os.getenv(
+                "APP_REPORT_TEMPLATE",
+                "templates/report.html.j2",
+            )
+        ),
+        report_path=report_directory / "index.html",
+        lock_path=data_directory / "pipeline.lock",
+        period_start=period_start,
+        period_end=period_end,
+    )
+
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="household-payroll"
@@ -125,6 +179,10 @@ def build_parser() -> argparse.ArgumentParser:
         "ingest-fixtures",
         help="Ingest the fictitious submission fixture",
     )
+    subparsers.add_parser(
+        "run-fixtures",
+        help="Run the complete fictitious MVP pipeline",
+    )
     return parser
 
 
@@ -139,6 +197,9 @@ def main() -> None:
 
     if args.command == "ingest-fixtures":
         raise SystemExit(_ingest_fixtures())
+
+    if args.command == "run-fixtures":
+        raise SystemExit(_run_fixtures())
 
     raise SystemExit(2)
 
