@@ -1,0 +1,19 @@
+name: household-payroll
+
+services:
+  pipeline:
+    build:
+      context: .
+    environment:
+      APP_TIMEZONE: ${APP_TIMEZONE:-Europe/Lisbon}
+      APP_CONFIG: ${APP_CONFIG:-/app/config/local.toml}
+      APP_DATA_DIR: ${APP_DATA_DIR:-/app/data}
+      APP_REPORT_DIR: ${APP_REPORT_DIR:-/app/reports}
+      APP_LOG_DIR: ${APP_LOG_DIR:-/app/logs}
+    volumes:
+      - ./config:/app/config:ro
+      - ./data:/app/data
+      - ./reports:/app/reports
+      - ./logs:/app/logs
+      - ./secrets:/app/secrets:ro
+    restart: "no"

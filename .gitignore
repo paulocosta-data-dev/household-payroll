@@ -1,0 +1,31 @@
+# Local configuration and credentials
+.env
+config/local.toml
+secrets/
+*.json.key
+credentials*.json
+
+# Runtime data
+data/
+reports/
+logs/
+backups/
+*.duckdb
+*.duckdb.wal
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+.test-tmp/
+dist/
+build/
+*.egg-info/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

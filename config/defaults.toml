@@ -1,0 +1,18 @@
+[application]
+timezone = "Europe/Lisbon"
+currency = "EUR"
+locale = "pt-PT"
+
+[payment_cycle]
+start_day = 28
+end_day = 27
+preferred_payment_days = [28, 29]
+
+[rounding]
+money_scale = 2
+mode = "ROUND_HALF_UP"
+
+[features]
+optional_worker_submission = true
+automatic_social_security_calculation = false
+worker_report_access = false

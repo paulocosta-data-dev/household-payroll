@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=75,<76"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "household-payroll"
+version = "0.1.0"
+description = "Local household payroll and domestic work ledger"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Proprietary" }
+authors = [{ name = "Project owner" }]
+dependencies = []
+
+[project.scripts]
+household-payroll = "household_payroll.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
