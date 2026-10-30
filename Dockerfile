@@ -10,5 +10,7 @@ COPY pyproject.toml README.md ./
 COPY src ./src
 COPY config ./config
 
+RUN pip install --no-cache-dir .
+
 ENTRYPOINT ["python", "-m", "household_payroll"]
 CMD ["healthcheck"]
