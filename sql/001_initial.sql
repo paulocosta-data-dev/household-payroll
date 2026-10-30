@@ -28,6 +28,20 @@ CREATE TABLE IF NOT EXISTS raw.form_submission (
         REFERENCES raw.ingestion_run(run_id)
 );
 
+CREATE TABLE IF NOT EXISTS raw.admin_record_observation (
+    source_table VARCHAR NOT NULL,
+    source_record_key VARCHAR NOT NULL,
+    content_hash VARCHAR NOT NULL,
+    payload_json JSON NOT NULL,
+    observed_at TIMESTAMPTZ NOT NULL,
+    ingestion_run_id VARCHAR NOT NULL
+        REFERENCES raw.ingestion_run(run_id),
+    PRIMARY KEY (
+        source_table,
+        source_record_key,
+        content_hash
+    )
+);
 CREATE TABLE IF NOT EXISTS core.work_submission (
     submission_id VARCHAR PRIMARY KEY,
     source_record_key VARCHAR NOT NULL UNIQUE,

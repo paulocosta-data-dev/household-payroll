@@ -14,6 +14,7 @@ EXPECTED_TABLES = [
     "core.work_submission",
     "mart.payment_line",
     "mart.payment_summary",
+    "raw.admin_record_observation",
     "raw.form_submission",
     "raw.ingestion_run",
 ]
