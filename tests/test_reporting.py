@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import tempfile
 import unittest
@@ -69,6 +69,9 @@ class ReportingTests(unittest.TestCase):
         self.assertIn("11,25", rendered_html)
         self.assertIn("Divergências", rendered_html)
         self.assertNotIn("<button", rendered_html)
+        self.assertIn("click-cleaner", rendered_html)
+        self.assertIn("PRONTO", rendered_html)
+        self.assertIn("broomSvg", rendered_html)
 
 
 if __name__ == "__main__":

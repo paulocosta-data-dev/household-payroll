@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt">
 <head>
   <meta charset="utf-8">
@@ -71,6 +71,35 @@
       margin-top: 24px;
       font-size: 0.9rem;
       color: #5d6d7e;
+    }
+    .click-cleaner {
+      position: fixed;
+      width: 64px;
+      height: 76px;
+      z-index: 9999;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      animation: cleaner-pop 900ms ease-out forwards;
+      filter: drop-shadow(0 5px 5px rgb(0 0 0 / 25%));
+    }
+    @keyframes cleaner-pop {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -35%) scale(0.55) rotate(-8deg);
+      }
+      25% {
+        opacity: 1;
+        transform: translate(-50%, -55%) scale(1.08) rotate(5deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -110%) scale(0.85) rotate(0deg);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .click-cleaner {
+        animation-duration: 250ms;
+      }
     }
   </style>
 </head>
@@ -156,5 +185,66 @@
       Regra de cálculo: {{ calculation_rule_version }}.
     </footer>
   </main>
+  <script>
+    (() => {
+      const broomSvg = `
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="32" height="32" viewBox="0 0 32 32">
+          <path d="M26 3 L13 20"
+                stroke="#835d32" stroke-width="3"
+                stroke-linecap="round"/>
+          <path d="M7 18 L15 20 L20 29 L3 29 Z"
+                fill="#d7a648" stroke="#835d32"
+                stroke-width="1.5"/>
+          <path d="M6 23 L18 26 M5 26 L19 28"
+                stroke="#8b642f" stroke-width="1"/>
+        </svg>`;
+
+      const cursor = `url("data:image/svg+xml,${
+        encodeURIComponent(broomSvg)
+      }") 4 28, auto`;
+
+      document.documentElement.style.cursor = cursor;
+      document.body.style.cursor = cursor;
+
+      document.addEventListener("click", (event) => {
+        const cleaner = document.createElement("div");
+        cleaner.className = "click-cleaner";
+        cleaner.setAttribute("aria-hidden", "true");
+        cleaner.style.left = `${event.clientX}px`;
+        cleaner.style.top = `${event.clientY}px`;
+
+        cleaner.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg"
+               viewBox="0 0 64 76" role="img">
+            <rect x="22" y="2" width="20" height="10"
+                  rx="3" fill="#c0392b"/>
+            <path d="M17 13 Q32 8 47 13 L52 67
+                     Q32 74 12 67 Z"
+                  fill="#176b3a" stroke="#0b3d24"
+                  stroke-width="2"/>
+            <rect x="15" y="29" width="34" height="24"
+                  rx="5" fill="#f4d03f"/>
+            <rect x="18" y="33" width="28" height="12"
+                  rx="3" fill="#c0392b"/>
+            <text x="32" y="42"
+                  text-anchor="middle"
+                  font-family="Arial, sans-serif"
+                  font-size="8" font-weight="700"
+                  fill="white">PRONTO</text>
+            <path d="M21 58 Q32 52 43 58"
+                  fill="none" stroke="#f7dc6f"
+                  stroke-width="2"/>
+          </svg>`;
+
+        document.body.appendChild(cleaner);
+        cleaner.addEventListener(
+          "animationend",
+          () => cleaner.remove(),
+          { once: true }
+        );
+      });
+    })();
+  </script>
 </body>
 </html>
