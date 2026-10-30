@@ -12,6 +12,7 @@ COPY config ./config
 COPY sql ./sql
 COPY examples ./examples
 COPY tests ./tests
+COPY templates ./templates
 
 RUN pip install --no-cache-dir .
 

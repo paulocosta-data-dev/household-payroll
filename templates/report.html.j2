@@ -1,0 +1,160 @@
+﻿<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Apuramento de serviço doméstico</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, system-ui, sans-serif;
+      background: #f4f6f8;
+      color: #17202a;
+    }
+    body {
+      margin: 0;
+      padding: 32px;
+    }
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    h1, h2 {
+      margin-top: 0;
+    }
+    .muted {
+      color: #5d6d7e;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+    .card {
+      background: white;
+      border: 1px solid #dfe6e9;
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 5%);
+    }
+    .metric {
+      font-size: 1.65rem;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #e5e8e8;
+      text-align: left;
+    }
+    th {
+      background: #eef2f5;
+    }
+    td.number, th.number {
+      text-align: right;
+    }
+    .notice {
+      margin-top: 24px;
+      padding: 16px;
+      border-left: 4px solid #f5b041;
+      background: #fef9e7;
+    }
+    footer {
+      margin-top: 24px;
+      font-size: 0.9rem;
+      color: #5d6d7e;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Apuramento de serviço doméstico</h1>
+      <p class="muted">
+        Período de {{ period_start }} a {{ period_end }}
+      </p>
+    </header>
+
+    <section class="grid" aria-label="Resumo">
+      <article class="card">
+        <div>Valor bruto aprovado</div>
+        <div class="metric">{{ gross_amount }}</div>
+      </article>
+      <article class="card">
+        <div>Visitas aprovadas</div>
+        <div class="metric">{{ approved_visits }}</div>
+      </article>
+      <article class="card">
+        <div>Horas aprovadas</div>
+        <div class="metric">{{ approved_hours }}</div>
+      </article>
+      <article class="card">
+        <div>Divergências</div>
+        <div class="metric">{{ divergent_count }}</div>
+      </article>
+    </section>
+
+    <section>
+      <h2>Linhas aprovadas</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Aprovação</th>
+            <th class="number">Minutos</th>
+            <th class="number">Horas</th>
+            <th class="number">Tarifa</th>
+            <th class="number">Bruto</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for line in payment_lines %}
+          <tr>
+            <td>{{ line.work_date }}</td>
+            <td>{{ line.approval_id }}</td>
+            <td class="number">{{ line.approved_minutes }}</td>
+            <td class="number">{{ line.approved_hours }}</td>
+            <td class="number">{{ line.hourly_rate }}</td>
+            <td class="number">{{ line.gross_amount }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <section class="grid" aria-label="Reconciliação">
+      <article class="card">
+        <div>Registos coincidentes</div>
+        <div class="metric">{{ matched_count }}</div>
+      </article>
+      <article class="card">
+        <div>Apenas registo base</div>
+        <div class="metric">{{ employer_only_count }}</div>
+      </article>
+      <article class="card">
+        <div>Apenas registo complementar</div>
+        <div class="metric">{{ worker_only_count }}</div>
+      </article>
+    </section>
+
+    <aside class="notice">
+      Este MVP apresenta apenas remuneração base aprovada.
+      Segurança Social, férias, subsídios, adiantamentos e
+      pagamentos efetivos ainda não fazem parte deste valor.
+    </aside>
+
+    <footer>
+      Atualização bem-sucedida: {{ generated_at }}.
+      Regra de cálculo: {{ calculation_rule_version }}.
+    </footer>
+  </main>
+</body>
+</html>
