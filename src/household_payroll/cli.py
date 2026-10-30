@@ -41,21 +41,33 @@ def _healthcheck() -> int:
     return 0
 
 
-def _init_database() -> int:
-    from household_payroll.database import initialize_database
-
-    data_directory = Path(os.getenv("APP_DATA_DIR", "data"))
-    database_path = Path(
+def _database_path() -> Path:
+    data_directory = Path(
+        os.getenv("APP_DATA_DIR", "data")
+    )
+    return Path(
         os.getenv(
             "APP_DATABASE_PATH",
             str(data_directory / "household-payroll.duckdb"),
         )
     )
-    schema_path = Path(
+
+
+def _schema_path() -> Path:
+    return Path(
         os.getenv("APP_SCHEMA_PATH", "sql/001_initial.sql")
     )
 
-    tables = initialize_database(database_path, schema_path)
+
+def _init_database() -> int:
+    from household_payroll.database import initialize_database
+
+    database_path = _database_path()
+    schema_path = _schema_path()
+    tables = initialize_database(
+        database_path,
+        schema_path,
+    )
 
     result = {
         "status": "ok",
@@ -67,8 +79,31 @@ def _init_database() -> int:
     return 0
 
 
+def _ingest_fixtures() -> int:
+    from household_payroll.ingestion import (
+        ingest_fixture_submissions,
+    )
+
+    fixture_path = Path(
+        os.getenv(
+            "APP_SUBMISSIONS_FIXTURE",
+            "examples/fixtures/submissions.csv",
+        )
+    )
+
+    result = ingest_fixture_submissions(
+        database_path=_database_path(),
+        schema_path=_schema_path(),
+        fixture_path=fixture_path,
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="household-payroll")
+    parser = argparse.ArgumentParser(
+        prog="household-payroll"
+    )
     parser.add_argument(
         "--version",
         action="version",
@@ -86,6 +121,10 @@ def build_parser() -> argparse.ArgumentParser:
         "init-db",
         help="Create or update the DuckDB schema",
     )
+    subparsers.add_parser(
+        "ingest-fixtures",
+        help="Ingest the fictitious submission fixture",
+    )
     return parser
 
 
@@ -97,6 +136,9 @@ def main() -> None:
 
     if args.command == "init-db":
         raise SystemExit(_init_database())
+
+    if args.command == "ingest-fixtures":
+        raise SystemExit(_ingest_fixtures())
 
     raise SystemExit(2)
 
