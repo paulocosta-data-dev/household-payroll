@@ -32,7 +32,36 @@ def _healthcheck() -> int:
         "version": __version__,
         "timezone": timezone_name,
         "warnings": warnings,
-        "paths": {name: str(path.resolve()) for name, path in required_paths.items()},
+        "paths": {
+            name: str(path.resolve())
+            for name, path in required_paths.items()
+        },
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
+def _init_database() -> int:
+    from household_payroll.database import initialize_database
+
+    data_directory = Path(os.getenv("APP_DATA_DIR", "data"))
+    database_path = Path(
+        os.getenv(
+            "APP_DATABASE_PATH",
+            str(data_directory / "household-payroll.duckdb"),
+        )
+    )
+    schema_path = Path(
+        os.getenv("APP_SCHEMA_PATH", "sql/001_initial.sql")
+    )
+
+    tables = initialize_database(database_path, schema_path)
+
+    result = {
+        "status": "ok",
+        "database": str(database_path.resolve()),
+        "schema": str(schema_path.resolve()),
+        "tables": tables,
     }
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
@@ -40,16 +69,35 @@ def _healthcheck() -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="household-payroll")
-    parser.add_argument("--version", action="version", version=__version__)
-    subparsers = parser.add_subparsers(dest="command", required=True)
-    subparsers.add_parser("healthcheck", help="Validate the local runtime")
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=__version__,
+    )
+    subparsers = parser.add_subparsers(
+        dest="command",
+        required=True,
+    )
+    subparsers.add_parser(
+        "healthcheck",
+        help="Validate the local runtime",
+    )
+    subparsers.add_parser(
+        "init-db",
+        help="Create or update the DuckDB schema",
+    )
     return parser
 
 
 def main() -> None:
     args = build_parser().parse_args()
+
     if args.command == "healthcheck":
         raise SystemExit(_healthcheck())
+
+    if args.command == "init-db":
+        raise SystemExit(_init_database())
+
     raise SystemExit(2)
 
 
